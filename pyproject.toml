@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "fastapiweather"
+version = "0.1.0"
+description = ""
+authors = ["mzagr <mzagrebam@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = {extras = ["all"], version = "^0.110.3"}
+sqlalchemy = "^2.0.29"
+asyncpg = "^0.29.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
