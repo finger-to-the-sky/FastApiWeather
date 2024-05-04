@@ -5,7 +5,7 @@ from starlette import status
 
 from app.db.config import DB
 from app.users.queries import crud, dependecies
-from app.users.queries.dependecies import validate_password, check_user
+from app.users.exceptions import check_user, validate_password
 from app.users.schemas import UserCreate, UserUpdate, UserSchema, User, UserUpdatePartial
 
 router = APIRouter(prefix='/users', tags=['Users'])
