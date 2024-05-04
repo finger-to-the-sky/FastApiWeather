@@ -7,3 +7,7 @@
 out
 gen
 .env
+
+/app/auth/keys/jwt-private.pem
+/app/auth/keys/jwt-public.pem
+data.txt
