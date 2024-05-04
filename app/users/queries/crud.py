@@ -2,6 +2,7 @@ from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.users.models import User
+from app.users.password_settings import get_password_hash
 from app.users.schemas import UserCreate, UserUpdate
 
 
@@ -29,7 +30,7 @@ async def get_user_by_username(session: AsyncSession, username: str) -> User | N
 
 
 async def create_user(session: AsyncSession, user: UserCreate) -> User:
-    user = User(username=user.username, email=user.email, hashed_password=user.password)
+    user = User(username=user.username, email=user.email, hashed_password=get_password_hash(user.password))
     session.add(user)
     await session.commit()
     return user
@@ -41,8 +42,8 @@ async def update_user(session: AsyncSession,
                       partial: bool = False
                       ) -> User:
     data = user_update.model_dump(exclude_unset=partial)
-    if partial is False:
-        data['hashed_password'] = data.pop('password')
+    if 'confirm_password' in data.keys():
+        data['hashed_password'] = get_password_hash(data.pop('password'))
         data.pop('confirm_password')
 
     for name, value in data.items():
