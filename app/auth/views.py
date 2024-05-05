@@ -1,18 +1,18 @@
-from datetime import timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.config import auth_settings
 from app.auth.schemas import Token
-from app.auth.utils import create_access_token
-from app.auth.user_operations import authenticate_user, get_current_user
+from app.auth.utils import create_access_token, create_refresh_token
+from app.auth.user_operations import authenticate_user, get_current_user, get_current_user_by_refresh
 from app.db.config import DB
-from app.users.schemas import UserSchema
+from app.users.schemas import UserSchema, User
 
-router = APIRouter(tags=['Auth'], prefix='/auth')
+http_bearer = HTTPBearer(auto_error=False)
+
+router = APIRouter(tags=['Auth'], prefix='/auth', dependencies=[Depends(http_bearer)])
 
 
 @router.post("/login/")
@@ -23,12 +23,17 @@ async def login_for_access_token(
     user = await authenticate_user(session=session,
                                    username=form_data.username,
                                    password=form_data.password)
+    access_token = create_access_token(user=user)
+    refresh_token = create_refresh_token(user=user)
+    return Token(access_token=access_token, refresh_token=refresh_token)
 
-    access_token_expires = timedelta(minutes=auth_settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": str(user.id)}, expires_delta=access_token_expires
-    )
-    return Token(access_token=access_token, token_type="bearer")
+
+@router.post("/refresh/", response_model=Token, response_model_exclude_none=True)
+async def get_refresh_token(
+        current_user: Annotated[User, Depends(get_current_user_by_refresh)]
+) -> Token:
+    access_token = create_access_token(current_user)
+    return Token(access_token=access_token)
 
 
 @router.get("/users/me/", response_model=UserSchema)

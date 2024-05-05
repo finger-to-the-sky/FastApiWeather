@@ -19,6 +19,7 @@ class AuthSettings(BaseModel):
     PUBLIC_KEY: bytes = get_key(filepath=PUBLIC_KEY_PATH)
     ALGORITHM: str = 'RS256'
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
 
 auth_settings = AuthSettings()
