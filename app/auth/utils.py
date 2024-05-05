@@ -24,10 +24,10 @@ def get_token_data(token: str) -> TokenData | None:
     exc = raise_401_exception("Could not validate credentials")
     try:
         payload = jwt.decode(token, auth_settings.PRIVATE_KEY, algorithms=[auth_settings.ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        user_id: str = payload.get("sub")
+        if user_id is None:
             raise exc
-        token_data = TokenData(username=username)
+        token_data = TokenData(id=user_id)
         return token_data
     except JWTError:
         raise exc

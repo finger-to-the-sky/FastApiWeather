@@ -10,6 +10,7 @@ from app.db.config import DB
 from app.users.models import User
 from app.users.password_settings import verify_password
 from app.users.queries.crud import get_user_by_username
+from app.users.queries.dependecies import user_by_uuid
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login/")
 
@@ -30,7 +31,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],
                            session: AsyncSession = Depends(DB.session_dependency)
                            ):
     token_data = get_token_data(token=token)
-    user = await get_user_by_username(session=session, username=token_data.username)
+    user = await user_by_uuid(session=session, user_id=token_data.id)
     if user is None:
         raise raise_401_exception(
             detail="Could not validate credentials"
