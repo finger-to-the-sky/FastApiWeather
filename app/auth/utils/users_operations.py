@@ -4,8 +4,8 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.exceptions import raise_401_exception
-from app.auth.utils import get_token_data, REFRESH_TOKEN_TYPE
+from app.auth.utils.exceptions import raise_401_exception
+from app.auth.utils.auth_operations import get_token_data, REFRESH_TOKEN_TYPE
 from app.db.config import DB
 from app.users.models import User
 from app.users.password_settings import verify_password

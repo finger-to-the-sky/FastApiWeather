@@ -11,3 +11,4 @@ gen
 /app/auth/keys/jwt-private.pem
 /app/auth/keys/jwt-public.pem
 data.txt
+TODO.txt

@@ -1,7 +1,7 @@
 from datetime import timedelta, datetime, timezone
 from jose import jwt, JWTError
 
-from app.auth.exceptions import raise_401_exception
+from app.auth.utils.exceptions import raise_401_exception
 from app.auth.schemas import TokenData
 from app.auth.config import auth_settings
 
@@ -19,8 +19,8 @@ def create_access_token(user):
 
 
 def create_refresh_token(user):
-    access_token_expires = timedelta(days=auth_settings.REFRESH_TOKEN_EXPIRE_DAYS)
-    expire = datetime.now(timezone.utc) + access_token_expires
+    refresh_token_expires = timedelta(days=auth_settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    expire = datetime.now(timezone.utc) + refresh_token_expires
     data = {"sub": str(user.id), "exp": expire, TYPE_FIELD_TOKEN: REFRESH_TOKEN_TYPE}
     encoded_jwt = jwt.encode(data, auth_settings.PRIVATE_KEY, algorithm=auth_settings.ALGORITHM)
     return encoded_jwt

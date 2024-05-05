@@ -5,8 +5,8 @@ from fastapi.security import OAuth2PasswordRequestForm, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.schemas import Token
-from app.auth.utils import create_access_token, create_refresh_token
-from app.auth.user_operations import authenticate_user, get_current_user, get_current_user_by_refresh
+from app.auth.utils.auth_operations import create_access_token, create_refresh_token
+from app.auth.utils.users_operations import authenticate_user, get_current_user, get_current_user_by_refresh
 from app.db.config import DB
 from app.users.schemas import UserSchema, User
 
