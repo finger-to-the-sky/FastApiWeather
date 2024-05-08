@@ -30,7 +30,8 @@ async def get_user_by_username(session: AsyncSession, username: str) -> User | N
 
 
 async def create_user(session: AsyncSession, user: UserCreate) -> User:
-    user = User(username=user.username, email=user.email, hashed_password=get_password_hash(user.password))
+    user = User(username=user.username, email=user.email, hashed_password=get_password_hash(user.password),
+                is_admin=user.is_admin, is_superuser=user.is_superuser)
     session.add(user)
     await session.commit()
     return user

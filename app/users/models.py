@@ -1,6 +1,6 @@
 import uuid
-
-from sqlalchemy import String
+from datetime import datetime
+from sqlalchemy import String, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -14,3 +14,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, server_default=func.now())
+    is_active: Mapped[bool] = mapped_column(default=True)
+    is_admin: Mapped[bool] = mapped_column(default=False)
+    is_superuser: Mapped[bool] = mapped_column(default=False)

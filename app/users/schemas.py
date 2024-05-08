@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, ConfigDict
@@ -9,8 +10,18 @@ class UserSchema(BaseModel):
 
 
 class UserCreate(UserSchema):
+    is_admin: bool = False
+    is_superuser: bool = False
     password: str
     confirm_password: str
+
+
+class AdminCreate(UserCreate):
+    is_admin: bool = True
+
+
+class SuperUserCreate(UserCreate):
+    is_superuser: bool = True
 
 
 class UserUpdate(UserCreate):
