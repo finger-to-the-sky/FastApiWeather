@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.users.models import User
 from app.users.password_settings import get_password_hash
-from app.users.schemas import UserCreate, UserUpdate
+from app.users.schemas import UserCreate, UserUpdate, AdminCreate, SuperUserCreate
 
 
 async def get_users(session: AsyncSession) -> list[User]:
@@ -30,8 +30,15 @@ async def get_user_by_username(session: AsyncSession, username: str) -> User | N
 
 
 async def create_user(session: AsyncSession, user: UserCreate) -> User:
-    user = User(username=user.username, email=user.email, hashed_password=get_password_hash(user.password),
-                is_admin=user.is_admin, is_superuser=user.is_superuser)
+    if isinstance(user, AdminCreate):
+        user = User(username=user.username, email=user.email, hashed_password=get_password_hash(user.password),
+                    is_admin=user.is_admin)
+    elif isinstance(user, SuperUserCreate):
+        user = User(username=user.username, email=user.email, hashed_password=get_password_hash(user.password),
+                    is_superuser=user.is_superuser)
+    else:
+        user = User(username=user.username, email=user.email, hashed_password=get_password_hash(user.password))
+
     session.add(user)
     await session.commit()
     return user

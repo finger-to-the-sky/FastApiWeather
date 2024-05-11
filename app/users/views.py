@@ -7,10 +7,11 @@ from starlette import status
 
 from app.auth.utils.users_operations import oauth2_scheme
 from app.db.config import DB
-from app.users.permissions import check_user_permissions, check_user_permissions_update_or_delete
+from app.users.permissions import check_user_permissions, check_user_permissions_update_or_delete, \
+    check_user_permission_on_superuser
 from app.users.queries import crud, dependecies
 from app.users.exceptions import check_user, validate_password
-from app.users.schemas import UserCreate, UserUpdate, UserSchema, User, UserUpdatePartial
+from app.users.schemas import UserCreate, UserUpdate, UserSchema, User, UserUpdatePartial, AdminCreate
 
 router = APIRouter(prefix='/users', tags=['Users'])
 
@@ -47,6 +48,7 @@ async def get_user_by_username(
         token: str = Depends(oauth2_scheme),
         session: AsyncSession = Depends(DB.session_dependency)
 ):
+
     user = await crud.get_user_by_username(session=session, username=username)
     if check_user_permissions(token):
         return await check_user(user=user, data_for_message=username)

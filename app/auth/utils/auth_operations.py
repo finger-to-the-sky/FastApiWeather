@@ -47,7 +47,7 @@ def validate_type_token(expected_type: str, payload: dict):
 def get_token_data(token: str) -> dict | None:
     exc = raise_401_exception("Could not validate credentials")
     try:
-        payload = jwt.decode(token, auth_settings.PRIVATE_KEY, algorithms=[auth_settings.ALGORITHM])
+        payload = jwt.decode(token, auth_settings.PUBLIC_KEY, algorithms=[auth_settings.ALGORITHM])
         return payload
     except JWTError:
         raise exc

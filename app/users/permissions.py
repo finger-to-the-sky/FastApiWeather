@@ -9,6 +9,13 @@ def check_user_permissions(token: str) -> bool:
     return False
 
 
+def check_user_permission_on_superuser(token: str) -> bool:
+    data = get_token_data(token)
+    if data['is_superuser']:
+        return True
+    return False
+
+
 def check_user_permissions_update_or_delete(token: str, user: User) -> bool:
     data = get_token_data(token)
     if data['is_admin'] or data['is_superuser']:
