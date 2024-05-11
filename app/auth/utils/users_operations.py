@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.utils.exceptions import raise_401_exception
-from app.auth.utils.auth_operations import get_token_data, REFRESH_TOKEN_TYPE
+from app.auth.utils.auth_operations import REFRESH_TOKEN_TYPE, get_user_from_payload
 from app.db.config import DB
 from app.users.models import User
 from app.users.password_settings import verify_password
@@ -30,7 +30,7 @@ async def authenticate_user(username: str,
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],
                            session: AsyncSession = Depends(DB.session_dependency)
                            ) -> User:
-    token_data = get_token_data(token=token)
+    token_data = get_user_from_payload(token=token)
     user = await user_by_uuid(session=session, user_id=token_data.id)
     if user is None:
         raise raise_401_exception(
@@ -42,7 +42,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],
 async def get_current_user_by_refresh(token: Annotated[str, Depends(oauth2_scheme)],
                                       session: AsyncSession = Depends(DB.session_dependency)
                                       ) -> User:
-    token_data = get_token_data(token=token, token_type=REFRESH_TOKEN_TYPE)
+    token_data = get_user_from_payload(token=token, token_type=REFRESH_TOKEN_TYPE)
     user = await user_by_uuid(session=session, user_id=token_data.id)
     if user is None:
         raise raise_401_exception(
