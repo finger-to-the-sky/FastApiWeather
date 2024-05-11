@@ -10,8 +10,6 @@ class UserSchema(BaseModel):
 
 
 class UserCreate(UserSchema):
-    is_admin: bool = False
-    is_superuser: bool = False
     password: str
     confirm_password: str
 

@@ -10,6 +10,7 @@ app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(manage_router)
 
+
 @app.get('/')
 def welcome():
     return {'msg': 'Welcome to the FastAPI Weather!'}
